@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.meng.crm.dao.SalesPlanMapper">
+	
+	<sql id="baseSQLConditions">
+		  <if test="custName != null and custName != '' ">
+			  and cust_name like #{custName} 
+		  </if>
+		  <if test="title != null and title != '' ">
+		  	  and title like #{title} 
+		  </if>
+		  <if test="contact != null">
+			  and contact like #{contact} 
+		  </if>
+	</sql>
+	
+	<select id="getElements" resultType="Long">
+		select count(s.id) 
+			from sales_chances s 
+			where s.status in (2,3,4)
+		  <include refid="baseSQLConditions"/>
+	</select>
+	
+	<select id="getContent" resultType="com.meng.crm.entity.SalesChance" parameterType="hashMap">
+		select * 
+		from(
+			  select rownum rn ,id,cust_name,title,contact,contact_tel,create_date ,status 
+			  from sales_chances 
+			  where status in (2,3,4)
+   			  <include refid="baseSQLConditions"/>
+			  )
+		 <![CDATA[
+		  where rn >= #{fromIndex} and rn < #{endIndex} 
+		 ]]>
+	</select>
+	
+</mapper>

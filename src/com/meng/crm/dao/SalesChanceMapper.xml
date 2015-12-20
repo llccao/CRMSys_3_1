@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.meng.crm.dao.SalesChanceMapper">
+	
+	<sql id="baseSQLConditions">
+		  <if test="custName != null and custName != '' ">
+			  and cust_name like #{custName} 
+		  </if>
+		  <if test="title != null and title != '' ">
+		  	  and title like #{title} 
+		  </if>
+		  <if test="contact != null">
+			  and contact like #{contact} 
+		  </if>
+	</sql>
+	
+	<!-- <insert id="insert" parameterType="com.meng.crm.entity.SalesChance">
+		insert into sales_chances
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="source != null">source,</if>
+			<if test="custName != null">cust_name,</if>
+			<if test="rate != null">rate,</if>
+			<if test="title != null">title,</if>
+			<if test="contact != null">contact,</if>
+			<if test="contactTel != null">contact_tel,</if>
+			<if test="description != null">description,</if>
+			<if test="createBy.id != null">created_user_id,</if>
+			<if test="createDate != null">create_date,</if>
+			<if test="designee.id != null">designee_id,</if>
+			<if test="designeeDate != null">designee_date,</if>
+			status,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null">crm_seq.nextval,</if>
+			<if test="source != null">#{source},</if>
+			<if test="custName != null">#{custName},</if>
+			<if test="rate != null">#{rate},</if>
+			<if test="title != null">#{title},</if>
+			<if test="contact != null">#{contact},</if>
+			<if test="contactTel != null">#{contactTel},</if>
+			<if test="description != null">#{description},</if>
+			<if test="createBy.id != null">#{createBy.id},</if>
+			<if test="createDate != null">#{createDate},</if>
+			<if test="designee.id != null">#{designee.id},</if>
+			<if test="designeeDate != null">#{designeeDate},</if>
+			#{status},
+		</trim>
+		
+	</insert> -->
+	
+	<!-- <update id="update" parameterType="com.meng.crm.entity.SalesChance">
+		update sales_chances 
+		<set>
+			<if test="source != null">source=#{source},</if>
+			<if test="custName != null">cust_name=#{custName},</if>
+			<if test="rate != null">rate=#{rate},</if>
+			<if test="title != null">title=#{title},</if>
+			<if test="contact != null">contact=#{contact},</if>
+			<if test="contactTel != null">contact_tel=#{contactTel},</if>
+			<if test="description != null">description=#{description},</if>
+			<if test="createBy.id != null">created_user_id=#{createBy.id},</if>
+			<if test="createDate != null">create_date=#{createDate},</if>
+			
+			<if test="designee.id != null">designee_id=#{designee.id},</if>
+			<if test="designeeDate != null">designee_date=#{designeeDate},</if>
+			status=#{status},
+		</set>
+		where id=#{id}
+	</update> -->
+	
+	<select id="getElements" resultType="Long">
+		select count(s.id) 
+			from sales_chances s 
+			where s.status = #{status}
+		  <include refid="baseSQLConditions"/>
+	</select>
+	
+	<select id="getContent" resultType="com.meng.crm.entity.SalesChance" parameterType="hashMap">
+		select * 
+		from(
+			  select rownum rn ,id,cust_name,title,contact,contact_tel,create_date ,status 
+			  from sales_chances 
+			  where status = #{status} 
+   			  <include refid="baseSQLConditions"/>
+			  )
+		 <![CDATA[
+		  where rn >= #{fromIndex} and rn < #{endIndex} 
+		 ]]>
+	</select>
+	
+</mapper>

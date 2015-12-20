@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.meng.crm.dao.CustomerMapper">
+	<!-- 将公共部分提取出来，下列参数在map中会有 -->
+	<sql id="salesChanceQueryCondition">
+		WHERE 1=1
+		<if test="name!=null and name!=''">
+			AND cu.name LIKE #{name}
+		</if>
+		<if test="region!=null and region!=''">
+			AND region = #{region}
+		</if>
+		<if test="level!=null and level!=''">
+			AND customer_level = #{level}
+		</if>
+		<if test="state!=null and state!=''">
+			AND state = #{state}
+		</if>
+		<if test="managerName!=null and managerName!=''">
+			AND co.name LIKE #{managerName}
+		</if>
+	</sql>
+
+
+
+	<!--author: lsj -->
+	<!-- 因为要使用插入之后的主键 所以设置了 useGeneratedKeys=true -->
+	<insert id="insertPart" parameterType="com.meng.crm.entity.Customer">
+		<selectKey order="BEFORE" keyProperty="id" resultType="long">
+			select crm_seq.nextval from dual
+		</selectKey>
+		insert into customers(id,name,no,state)
+		values(#{id},#{name,jdbcType=VARCHAR},#{no,jdbcType=VARCHAR},#{state,jdbcType=NUMERIC})
+	</insert>
+
+	<!-- 查询总的记录数 -->
+	<select id="getElements" parameterType="map" resultType="long">
+		SELECT COUNT(*) FROM (
+		SELECT cu.name ,region,
+		co.name,customer_level,state
+		FROM customers cu
+		LEFT JOIN contacts co
+		ON
+		cu.manager_id = co.id
+		<include refid="salesChanceQueryCondition" />
+		)
+	</select>
+
+	<!-- 查询所有 -->
+
+	<!-- 注意：这里是带查询条件的分页 -->
+	<select id="getContent" parameterType="map"
+		resultType="com.meng.crm.entity.Customer">
+		SELECT * FROM (
+		SELECT ROWNUM rn,no,cu.name AS "name",region, co.name
+		AS "manager.name",
+		customer_level AS "level",state,cu.id AS "id"
+		FROM
+		customers cu
+		LEFT JOIN contacts co
+		ON cu.manager_id = co.id
+		<include refid="salesChanceQueryCondition" />
+		)
+		<![CDATA[
+			 WHERE rn >=#{fromIndex} AND rn < #{endIndex}
+		]]>
+	</select>
+
+	<!-- <select id="getById" parameterType="Integer" resultType="com.meng.crm.entity.Customer"> 
+		SELECT no,name,address,co.name AS "manager.name",customer_level AS "level",state, 
+		credit, satify,zip,tel,fax,websit,licence_no AS "licenceNo",chief,bankroll, 
+		turnover,bank,bank_account AS "bankAccount", local_tax_no AS "localTaxNo", 
+		national_tax_no AS "nationalTaxNo",id FROM customers cu LEFT JOIN contacts 
+		co ON cu.manager_id = co.id </select> -->
+
+</mapper>
