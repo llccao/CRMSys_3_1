@@ -1,0 +1,33 @@
+package com.meng.crm.test;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+
+import com.meng.crm.entity.SalesChance;
+import com.meng.crm.service.SalesChanceService;
+
+@Service
+public class test {
+
+	private ApplicationContext ioc = null;
+	
+	private SalesChanceService service;
+	
+	@Before
+	public void init() {
+		ioc = new ClassPathXmlApplicationContext("applicationContext.xml");
+		
+		service = ioc.getBean(SalesChanceService.class);
+	}
+	
+	@Test
+	public void testGetById() {
+		SalesChance chance = service.getById(162);
+		
+		System.out.println(chance.getDesignee());
+	}
+
+}

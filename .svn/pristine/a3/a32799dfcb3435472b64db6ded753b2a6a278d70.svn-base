@@ -1,0 +1,13 @@
+package com.meng.crm.test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.meng.crm.service.SalesChanceService;
+
+public class test {
+
+	@Autowired
+	private SalesChanceService service;
+	
+
+}

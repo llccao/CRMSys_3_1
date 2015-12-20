@@ -1,0 +1,4 @@
+jdbc.user=scott
+jdbc.password=tiger
+jdbc.driverClass=oracle.jdbc.driver.OracleDriver
+jdbc.jdbcUrl=jdbc:oracle:thin:@192.168.10.28:1521:orcl

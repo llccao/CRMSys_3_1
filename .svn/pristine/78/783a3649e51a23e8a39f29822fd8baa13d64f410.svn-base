@@ -1,0 +1,16 @@
+package com.meng.crm.dao;
+
+
+import com.meng.crm.entity.Customer;
+
+
+public interface CustomerMapper {
+	
+	/**
+	 * 客户开发成功时插入进customer的关联的一些属性字段
+	 * 插入 3 个字段：name，no（随机字符串） 和 state（正常）
+	 * 此处因为得用插入之后的主键   所以该用配置文件的方式
+	 * @author lsj
+	 */
+	void insertPart(Customer customer);
+}

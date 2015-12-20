@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<settings>
+		<!-- 对于非一对多的关联关系中配置这个属性,是数据表中带有下划线的列自动映射到对象的相关属性中去 -->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	 	<!-- 开启二级缓存 -->
+	    <setting name="cacheEnabled" value="true"/>
+	</settings>
+	
+</configuration>

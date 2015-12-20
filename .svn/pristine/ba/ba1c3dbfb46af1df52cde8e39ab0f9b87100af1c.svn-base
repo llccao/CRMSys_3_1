@@ -1,0 +1,7 @@
+package com.meng.crm.dao;
+
+
+public interface SalesPlanMapper {
+	
+	
+}

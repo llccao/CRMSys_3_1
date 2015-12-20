@@ -1,0 +1,76 @@
+package com.meng.crm.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.meng.crm.entity.SalesChance;
+import com.meng.crm.entity.User;
+
+
+public interface SalesChanceMapper {
+	
+	/**
+	 * 根据ID修改status
+	 * @param status
+	 * @param id
+	 * @author lsj
+	 */
+	@Update("update sales_chances set status=#{status} where id=#{id}")
+	public void updateStatusById(@Param("status")Integer status,@Param("id")Integer id);
+	
+	@Update("update sales_chances set designee_id = #{designee.id},"
+			+ "designee_date=#{designeeDate},status=#{status}"
+			+ "where id = #{id}")
+	public void updatePart(SalesChance chance);
+	
+	// 查询得到所有的user,以便将其销售机会指定给他.
+	@Select("select * from users ")
+	public List<User> getUsers();
+	
+	// 删除某个销售机会
+	@Update("delete from sales_chances where id = #{id}")
+	public void delete(Integer id);
+	
+	@Update("update sales_chances "
+			+ "set source=#{source},cust_name=#{custName},rate=#{rate},title=#{title},"
+			+ "contact=#{contact},contact_tel=#{contactTel},description=#{description}"
+			+ "where id=#{id}")
+	public void update(SalesChance chance);
+	
+	// 根据id查出某个salesChance 对象
+	@Select("select s.id, source, cust_name, rate, title, "
+			+ "contact, contact_tel, description, create_date, designee_date ,"
+			+ "designee_id as \"designee.id \",status,u1.name as \"createBy.name\",u2.name as \"designee.name\""
+			+ "from sales_chances s "
+			+ "left outer join users u1 "
+			+ "on s.created_user_id = u1.id "
+			+ "left outer join users u2 "
+			+ "on s.designee_id = u2.id "
+			+ "where s.id = #{id}")
+	public SalesChance getById(@Param("id") Integer id);
+	
+	// 插入一个销售机会
+	@Insert("insert into sales_chances(id, source, cust_name, rate, title, "
+			+ "contact, contact_tel, description, created_user_id, create_date, status) "
+			+ "values(crm_seq.nextval, #{source}, #{custName}, #{rate}, #{title}, "
+			+ "#{contact}, #{contactTel}, #{description}, #{createBy.id}, #{createDate}, #{status})")
+	public void insert(SalesChance salesChance);
+	
+	/**
+	 * 因为待查询条件的分页,不知道什么时候会用到这个查询条件,而平时的查询还是很正常的查询,那么此时不
+	 * 传递参数,所以where中的条件判断是空的,会出异常,此时最好采用配置文件的方式为好,因为这时候
+	 * 可以用if来判断是否为空
+	 */
+	// 获取总记录数
+	public long getElements(Map<String, Object> myBatisMap);
+	
+	// 获取当前页面的 content
+	public List<SalesChance> getContent(Map<String,Object> myBatisMap);
+
+
+}

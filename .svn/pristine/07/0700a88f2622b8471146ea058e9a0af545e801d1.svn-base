@@ -1,0 +1,15 @@
+package com.meng.crm.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.meng.crm.entity.SalesChance;
+
+public interface SalesPlanMapper {
+	// 获取总记录数
+	public long getElements(Map<String, Object> myBatisMap);
+
+	// 获取当前页面的 content
+	public List<SalesChance> getContent(Map<String, Object> myBatisMap);
+
+}
